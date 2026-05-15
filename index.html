@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VELA — Go Further</title>
+<meta name="description" content="Expedition intelligence for overlanders, photographers, and off-grid adventurers. Real-time fire alerts, EcoFlow monitoring, AI survival expert, and gear registry.">
+<meta property="og:title" content="VELA — Go Further">
+<meta property="og:description" content="Expedition intelligence for overlanders and off-grid adventurers.">
+<meta property="og:image" content="https://vela-go.com/images/hero.jpg">
+<meta property="og:url" content="https://vela-go.com">
+<meta name="theme-color" content="#1C2117">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #1C2117;
+  --bg2: #242B1E;
+  --bg3: #2A3323;
+  --border: #3A4A32;
+  --text: #F0EDE4;
+  --text2: #A8B89A;
+  --text3: #6B7D5E;
+  --accent: #C4521A;
+  --safe: #4A7C3F;
+  --font: 'Ubuntu', sans-serif;
+  --mono: 'Ubuntu Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(28,33,23,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(58,74,50,0.3);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo-text {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+  background: var(--accent) !important;
+  color: #fff !important;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 500 !important;
+}
+
+@media (max-width: 640px) {
+  nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('images/hero.jpg');
+  background-size: cover;
+  background-position: center 45%;
+  z-index: 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(28,33,23,0.15) 0%,
+    rgba(28,33,23,0.25) 30%,
+    rgba(28,33,23,0.70) 60%,
+    rgba(28,33,23,0.95) 100%
+  );
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 680px;
+}
+
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: var(--font);
+  font-size: clamp(48px, 8vw, 80px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 20px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: rgba(240,237,228,0.75);
+  margin-bottom: 36px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 4px 24px rgba(196,82,26,0.3);
+}
+
+.btn-primary:hover {
+  background: #A8420F;
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: rgba(240,237,228,0.1);
+  color: var(--text);
+  padding: 14px 32px;
+  border-radius: 10px;
+  border: 1px solid rgba(240,237,228,0.2);
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s;
+}
+
+.btn-ghost:hover { background: rgba(240,237,228,0.15); }
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.hero-pill {
+  background: rgba(240,237,228,0.08);
+  border: 1px solid rgba(240,237,228,0.15);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(240,237,228,0.65);
+  letter-spacing: 0.04em;
+}
+
+/* ── SECTION BASE ── */
+section {
+  padding: 96px 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: var(--font);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.section-sub {
+  font-size: 17px;
+  color: var(--text2);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+@media (max-width: 640px) { section { padding: 64px 20px; } }
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.feature-card:hover {
+  border-color: var(--safe);
+  transform: translateY(-2px);
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 14px;
+  color: var(--accent);
+}
+
+.feature-title {
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* ── AI SECTION ── */
+.ai-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 96px 48px;
+}
+
+.ai-inner { max-width: 1100px; margin: 0 auto; }
+
+.ai-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.ai-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-card::before {
+  content: 'PRO';
+  position: absolute;
+  top: 16px; right: 16px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 2px 7px;
+}
+
+.ai-card-icon {
+  width: 36px;
+  height: 36px;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.ai-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.ai-card-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+@media (max-width: 640px) { .ai-section { padding: 64px 20px; } }
+
+/* ── GALLERY ── */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.gallery-grid img:hover {
+  transform: scale(1.02);
+  border-color: var(--safe);
+}
+
+.gallery-grid img:first-child {
+  grid-column: span 2;
+  height: 360px;
+}
+
+@media (max-width: 768px) {
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
+  .gallery-grid img:first-child { grid-column: span 2; height: 240px; }
+  .gallery-grid img { height: 180px; }
+}
+
+@media (max-width: 480px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+  .gallery-grid img:first-child { grid-column: span 1; }
+}
+
+/* ── PRICING ── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.pricing-card.pro {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(196,82,26,0.08) 0%, var(--bg2) 100%);
+}
+
+.pricing-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.pricing-card.pro .pricing-label { color: var(--accent); }
+
+.pricing-price {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.pricing-period {
+  font-size: 14px;
+  color: var(--text3);
+  margin-bottom: 24px;
+  font-family: var(--mono);
+}
+
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.pricing-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text2);
+}
+
+.pricing-features li svg { color: var(--safe); flex-shrink: 0; }
+.pricing-features li.muted { color: var(--text3); }
+.pricing-features li.muted svg { color: var(--border); }
+
+.btn-pricing {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-pricing-free {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.btn-pricing-free:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.btn-pricing-pro {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(196,82,26,0.25);
+}
+
+.btn-pricing-pro:hover {
+  background: #A8420F;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+/* ── CTA STRIP ── */
+.cta-strip {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 80px 48px;
+  text-align: center;
+}
+
+.cta-strip h2 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.cta-strip p {
+  font-size: 17px;
+  color: var(--text2);
+  margin-bottom: 32px;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 40px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.footer-brand-text {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-decoration: none;
+}
+
+.footer-links a:hover { color: var(--text2); }
+
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 640px) {
+  footer { padding: 32px 20px; }
+  .footer-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 100 100">
+      <path d="M50 5C41.7 5 35 11.7 35 20c0 11.5 15 28 15 28s15-16.5 15-28C65 11.7 58.3 5 50 5zM50 26c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z" fill="#F0EDE4"/>
+      <path d="M2 92L30 38L45 63L38 73L53 92H2z" fill="#F0EDE4" opacity="0.9"/>
+      <path d="M98 92L70 45L55 65L62 75L47 92H98z" fill="#F0EDE4" opacity="0.7"/>
+      <path d="M44 92C44 92 46 75 50 68C54 61 58 58 56 51C54 44 50 47 50 47" fill="none" stroke="#1C2117" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-logo-text">VELA</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#ai">AI</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="https://app.vela-go.com" class="nav-cta">Open app</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Expedition intelligence</div>
+    <h1 class="hero-title">Go Further.</h1>
+    <p class="hero-sub">
+      Real-time fire alerts, EcoFlow monitoring, AI survival expert,
+      and gear registry — built for overlanders who go off the map.
+    </p>
+    <div class="hero-actions">
+      <a href="https://app.vela-go.com" class="btn-primary">
+        Get started free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <a href="#features" class="btn-ghost">See features</a>
+    </div>
+    <div class="hero-pills">
+      <span class="hero-pill">Fire &amp; safety alerts</span>
+      <span class="hero-pill">EcoFlow monitoring</span>
+      <span class="hero-pill">Offline maps</span>
+      <span class="hero-pill">AI survival agent</span>
+      <span class="hero-pill">Gear registry</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="section-tag">What VELA does</div>
+  <h2 class="section-title">Everything you need out there.</h2>
+  <p class="section-sub">Built on real data from NIFC, NOAA, AirNow, and your own EcoFlow devices. Works offline when you need it most.</p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L4 6v6c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V6L12 2z"/>
+      </svg>
+      <div class="feature-title">Fire &amp; safety alerts</div>
+      <p class="feature-desc">Live NIFC fire perimeters, evacuation zones, AQI, and fire weather warnings — all on one map. Know before you go.</p>
+    </div>
+
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="6" width="18" height="12" rx="2" ry="2"/>
+        <line x1="23" y1="11" x2="23" y2="13"/>
+        <line x1="6" y1="10" x2="6" y2="14"/>
+        <line x1="10" y1="8" x2="10" y2="16"/>
+        <line x1="14" y1="10" x2="14" y2="14"/>
+      </svg>
+      <div class="feature-title">EcoFlow monitoring</div>
+      <p class="feature-desc">Real-time battery SOC, input/output wattage, port control, and time remaining across all your EcoFlow devices simultaneously.</p>
+    </div>
+
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 20L9 8l4 6 3-4 5 10H3z"/>
+      </svg>
+      <div class="feature-title">Offline trip maps</div>
+      <p class="feature-desc">MapLibre with OpenFreeMap tiles that work without cell signal. Plan routes, mark waypoints, and navigate in the backcountry.</p>
+    </div>
+
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+      </svg>
+      <div class="feature-title">Gear registry</div>
+      <p class="feature-desc">Track every piece of kit — condition, quantity, vendor, purchase link. Feeds into your pre-trip packing checklist automatically.</p>
+    </div>
+
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+      </svg>
+      <div class="feature-title">Weather &amp; conditions</div>
+      <p class="feature-desc">NOAA weather, AirNow AQI, fire weather watches, and red flag warnings — all pulled for your exact GPS location.</p>
+    </div>
+
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 6l11 6 11-6"/>
+        <path d="M1 12l11 6 11-6"/>
+      </svg>
+      <div class="feature-title">Starlink monitoring</div>
+      <p class="feature-desc">Dish status, download/upload speeds, latency, and obstruction percentage — live from your Starlink via local proxy.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── AI FEATURES ── -->
+<div class="ai-section" id="ai">
+  <div class="ai-inner">
+    <div class="section-tag">PRO · AI features</div>
+    <h2 class="section-title">Intelligence for the field.</h2>
+    <p class="section-sub">Powered by Claude — the same AI that understands context, nuance, and the stakes of decisions made miles from help.</p>
+
+    <div class="ai-grid">
+
+      <div class="ai-card">
+        <svg class="ai-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L4 6v6c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V6L12 2z"/>
+        </svg>
+        <div class="ai-card-title">Survival Agent</div>
+        <p class="ai-card-desc">A wilderness expert that knows your GPS location, current weather, AQI, and active trip. Ask about recovery, first aid, fire behavior, water treatment, or mechanical diagnosis — and get answers calibrated to your actual situation.</p>
+      </div>
+
+      <div class="ai-card">
+        <svg class="ai-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+        </svg>
+        <div class="ai-card-title">Knowledge Base</div>
+        <p class="ai-card-desc">Upload your Jeep manual, Ursa Minor guide, EcoFlow docs, and recovery handbooks. Ask anything — get answers with exact page references from your own documents.</p>
+      </div>
+
+      <div class="ai-card">
+        <svg class="ai-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8h1a4 4 0 010 8h-1"/>
+          <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+          <line x1="6" y1="1" x2="6" y2="4"/>
+          <line x1="10" y1="1" x2="10" y2="4"/>
+          <line x1="14" y1="1" x2="14" y2="4"/>
+        </svg>
+        <div class="ai-card-title">Meal Planning</div>
+        <p class="ai-card-desc">Tell it your trip length, party size, cooking setup, and dietary needs. Get a complete day-by-day meal plan with shopping list, prep instructions, and calorie counts — optimised for off-grid cooking.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── GALLERY ── -->
+<section id="gallery">
+  <div class="section-tag">Out there</div>
+  <h2 class="section-title">Built for this.</h2>
+  <p class="section-sub">VELA was designed on the trail, tested in the desert, and refined at 4,200 feet with no cell signal.</p>
+
+  <div class="gallery-grid">
+    <img src="images/_8505708-Edit.jpg" alt="Chomp overlanding" loading="lazy">
+    <img src="images/2022_Chomp_Alvord-82.jpg" alt="Alvord Desert" loading="lazy">
+    <img src="images/_8506010.jpg" alt="Trail" loading="lazy">
+    <img src="images/Bethel_Ridge20-240704.jpg" alt="Bethel Ridge" loading="lazy">
+    <img src="images/_8506167-HDR.jpg" alt="Landscape" loading="lazy">
+    <img src="images/440167B9-017D-43F0-867B-89F9B25791E0.jpg" alt="Chomp in the field" loading="lazy">
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section id="pricing" style="padding-bottom: 48px;">
+  <div class="section-tag">Pricing</div>
+  <h2 class="section-title">Simple, honest pricing.</h2>
+  <p class="section-sub">Free to start. Upgrade when the AI features earn their keep.</p>
+
+  <div class="pricing-grid">
+
+    <div class="pricing-card">
+      <div class="pricing-label">Free</div>
+      <div class="pricing-price">$0</div>
+      <div class="pricing-period">forever</div>
+      <ul class="pricing-features">
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Fire &amp; safety alerts</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>EcoFlow monitoring</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Offline maps</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Gear registry</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Trip planning</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Weather &amp; AQI</li>
+        <li class="muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>AI Survival Agent</li>
+        <li class="muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Knowledge Base RAG</li>
+        <li class="muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>AI Meal Planning</li>
+      </ul>
+      <a href="https://app.vela-go.com" class="btn-pricing btn-pricing-free">Get started free</a>
+    </div>
+
+    <div class="pricing-card pro">
+      <div class="pricing-label">PRO</div>
+      <div class="pricing-price">$4.99</div>
+      <div class="pricing-period">per month · or $39/year</div>
+      <ul class="pricing-features">
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Free</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>AI Survival Agent</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Knowledge Base RAG</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>AI Meal Planning</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Bulk gear import</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Cancel anytime</li>
+      </ul>
+      <a href="https://app.vela-go.com" class="btn-pricing btn-pricing-pro">Start with PRO</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CTA STRIP ── -->
+<div class="cta-strip">
+  <h2>Ready to go further?</h2>
+  <p>Free to install. Works on iPhone, Android, and desktop as a PWA. No app store required.</p>
+  <a href="https://app.vela-go.com" class="btn-primary" style="display:inline-flex">
+    Open VELA
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </a>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a href="/" class="footer-brand">
+    <svg width="22" height="22" viewBox="0 0 100 100">
+      <path d="M50 5C41.7 5 35 11.7 35 20c0 11.5 15 28 15 28s15-16.5 15-28C65 11.7 58.3 5 50 5zM50 26c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z" fill="#F0EDE4"/>
+      <path d="M2 92L30 38L45 63L38 73L53 92H2z" fill="#F0EDE4" opacity="0.9"/>
+      <path d="M98 92L70 45L55 65L62 75L47 92H98z" fill="#F0EDE4" opacity="0.7"/>
+      <path d="M44 92C44 92 46 75 50 68C54 61 58 58 56 51C54 44 50 47 50 47" fill="none" stroke="#1C2117" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <span class="footer-brand-text">VELA</span>
+  </a>
+  <ul class="footer-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="mailto:dan@vela-go.com">Contact</a></li>
+    <li><a href="https://app.vela-go.com">App</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 VELA · vela-go.com</div>
+</footer>
+
+</body>
+</html>
