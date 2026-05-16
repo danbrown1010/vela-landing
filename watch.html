@@ -157,6 +157,10 @@ nav {
     <div class="map-overlay" id="position-overlay" style="display:none">
       <div class="overlay-label">Crew position</div>
       <div class="overlay-value" id="position-coords">—</div>
+      <div id="ecoflow-row" style="display:none;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.1);align-items:center;justify-content:center;gap:6px;">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;">EcoFlow</span>
+        <span id="ecoflow-soc" style="font-family:var(--mono);font-size:13px;color:var(--text);">—</span>
+      </div>
     </div>
   </div>
 </div>
@@ -259,7 +263,7 @@ function startWatching(trip) {
       if (payload.eventType === 'DELETE') {
         broadcastEnded()
       } else if (payload.new) {
-        updateMarker(payload.new.lat, payload.new.lng)
+        updateMarker(payload.new.lat, payload.new.lng, payload.new.ecoflow_soc)
       }
     })
     .subscribe()
@@ -275,12 +279,24 @@ async function loadPosition(tripId) {
     .maybeSingle()
 
   if (data) {
-    updateMarker(data.lat, data.lng)
+    updateMarker(data.lat, data.lng, data.ecoflow_soc)
     updateLastUpdate(data.recorded_at)
   }
 }
 
-function updateMarker(lat, lng) {
+function updateEcoFlow(soc) {
+  const row = document.getElementById('ecoflow-row')
+  const el  = document.getElementById('ecoflow-soc')
+  if (soc != null) {
+    el.textContent = `${soc}%`
+    el.style.color = soc > 50 ? 'var(--safe)' : soc > 20 ? '#f59e0b' : '#ef4444'
+    row.style.display = 'flex'
+  } else {
+    row.style.display = 'none'
+  }
+}
+
+function updateMarker(lat, lng, soc) {
   const el = document.createElement('div')
   el.className = 'crew-marker'
   el.innerHTML = '<div class="crew-marker-pulse"></div><div class="crew-marker-dot"></div>'
@@ -292,6 +308,7 @@ function updateMarker(lat, lng) {
   document.getElementById('position-overlay').style.display = 'block'
   document.getElementById('position-coords').textContent =
     `${lat.toFixed(4)}°N · ${Math.abs(lng).toFixed(4)}°W`
+  updateEcoFlow(soc ?? null)
   updateLastUpdate(new Date().toISOString())
 }
 
