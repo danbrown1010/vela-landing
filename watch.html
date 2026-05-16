@@ -256,7 +256,11 @@ function startWatching(trip) {
       event: '*', schema: 'public', table: 'trip_positions',
       filter: `trip_id=eq.${trip.id}`,
     }, (payload) => {
-      if (payload.new) updateMarker(payload.new.lat, payload.new.lng)
+      if (payload.eventType === 'DELETE') {
+        broadcastEnded()
+      } else if (payload.new) {
+        updateMarker(payload.new.lat, payload.new.lng)
+      }
     })
     .subscribe()
 }
