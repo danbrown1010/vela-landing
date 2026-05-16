@@ -272,7 +272,7 @@ function startWatching(trip) {
       if (payload.eventType === 'DELETE') {
         broadcastEnded()
       } else if (payload.new) {
-        updateMarker(payload.new.lat, payload.new.lng, payload.new.ecoflow_soc)
+        updateMarker(payload.new.lat, payload.new.lng, payload.new.ecoflow_soc, payload.new.ecoflow_charging)
       }
     })
     .subscribe()
@@ -288,16 +288,17 @@ async function loadPosition(tripId) {
     .maybeSingle()
 
   if (data) {
-    updateMarker(data.lat, data.lng, data.ecoflow_soc)
+    updateMarker(data.lat, data.lng, data.ecoflow_soc, data.ecoflow_charging)
     updateLastUpdate(data.recorded_at)
   }
 }
 
-function updateEcoFlow(soc) {
+function updateEcoFlow(soc, charging) {
   const row = document.getElementById('ecoflow-row')
   const el  = document.getElementById('ecoflow-soc')
   if (soc != null) {
-    el.textContent = `${soc}%`
+    const chargingLabel = charging != null ? (charging ? ' · ⚡ Charging' : ' · Discharging') : ''
+    el.textContent = `${soc}%${chargingLabel}`
     el.style.color = soc > 50 ? 'var(--safe)' : soc > 20 ? '#f59e0b' : '#ef4444'
     row.style.display = 'flex'
   } else {
@@ -305,7 +306,7 @@ function updateEcoFlow(soc) {
   }
 }
 
-function updateMarker(lat, lng, soc) {
+function updateMarker(lat, lng, soc, charging) {
   const el = document.createElement('div')
   el.className = 'crew-marker'
   el.innerHTML = '<div class="crew-marker-pulse"></div><div class="crew-marker-dot"></div>'
@@ -317,7 +318,7 @@ function updateMarker(lat, lng, soc) {
   document.getElementById('position-overlay').style.display = 'block'
   document.getElementById('position-coords').textContent =
     `${lat.toFixed(4)}°N · ${Math.abs(lng).toFixed(4)}°W`
-  updateEcoFlow(soc ?? null)
+  updateEcoFlow(soc ?? null, charging ?? null)
   updateLastUpdate(new Date().toISOString())
 }
 
