@@ -191,13 +191,13 @@ async function submitPassword() {
   document.getElementById('pw-error').style.display = 'none'
 
   try {
-    const { data: crew, error } = await sb
-      .from('crews')
-      .select('*')
-      .eq('watch_password', pw)
-      .single()
+    const { data: rows, error } = await sb
+      .rpc('get_crew_by_password', { p_password: pw })
+
+    const crew = rows?.[0] ?? null
 
     if (error || !crew) {
+      console.error('Crew lookup:', error ?? 'no match')
       document.getElementById('pw-error').style.display = 'block'
       btn.disabled = false
       btn.textContent = 'Watch →'
