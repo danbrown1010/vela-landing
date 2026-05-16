@@ -154,17 +154,15 @@ nav {
       <div class="crew-name" id="crew-name">Loading...</div>
       <div id="crew-status" class="crew-status status-waiting">Waiting for broadcast...</div>
     </div>
-    <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
-      <span id="trip-day-badge" class="day-badge" style="display:none"></span>
-      <div>
-        <div style="font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Last update</div>
-        <div id="last-update" style="font-size:11px;font-family:var(--mono);color:var(--text2);">—</div>
-      </div>
+    <div style="text-align:right">
+      <div style="font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Last update</div>
+      <div id="last-update" style="font-size:11px;font-family:var(--mono);color:var(--text2);">—</div>
     </div>
   </div>
   <div style="position:relative;flex:1;display:flex;flex-direction:column;">
     <div id="map"></div>
     <div class="map-overlay" id="position-overlay" style="display:none">
+      <div id="trip-day-badge" style="display:none;margin-bottom:8px;"></div>
       <div class="overlay-label">Crew position</div>
       <div class="overlay-value" id="position-coords">—</div>
       <div id="ecoflow-row" style="display:none;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.1);align-items:center;justify-content:center;gap:6px;">
@@ -329,19 +327,24 @@ function updateLastUpdate(timestamp) {
 }
 
 function showTripDay(trip) {
-  if (!trip?.departure_date) return
-  const start = new Date(trip.departure_date)
-  start.setHours(0, 0, 0, 0)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const dayOf = Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1
-  if (dayOf < 1) return
-  const totalDays = trip.return_date
-    ? Math.floor((new Date(trip.return_date) - start) / (1000 * 60 * 60 * 24)) + 1
-    : null
   const badge = document.getElementById('trip-day-badge')
-  badge.textContent = totalDays ? `DAY ${dayOf} / ${totalDays}` : `DAY ${dayOf}`
-  badge.style.display = 'inline-block'
+  let label = 'LIVE'
+  if (trip?.departure_date) {
+    const msPerDay = 1000 * 60 * 60 * 24
+    const start = new Date(trip.departure_date)
+    start.setHours(0, 0, 0, 0)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const dayOf = Math.floor((today - start) / msPerDay) + 1
+    if (dayOf >= 1) {
+      const totalDays = trip.return_date
+        ? Math.floor((new Date(new Date(trip.return_date).setHours(0,0,0,0)) - start) / msPerDay) + 1
+        : null
+      label = totalDays ? `DAY ${dayOf} / ${totalDays}` : `DAY ${dayOf}`
+    }
+  }
+  badge.innerHTML = `<span style="font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 14px;border-radius:20px;background:rgba(196,82,26,0.2);color:#C4521A;letter-spacing:0.06em;">${label}</span>`
+  badge.style.display = 'block'
 }
 
 function broadcastEnded() {
