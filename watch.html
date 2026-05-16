@@ -81,6 +81,13 @@ nav {
 .status-live { color: var(--safe); }
 .status-waiting { color: var(--text3); }
 
+.day-badge {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  padding: 3px 12px; border-radius: 20px;
+  background: rgba(196, 82, 26, 0.15); color: var(--accent);
+  white-space: nowrap; display: inline-block;
+}
+
 #map { flex: 1; }
 
 .map-overlay {
@@ -147,9 +154,12 @@ nav {
       <div class="crew-name" id="crew-name">Loading...</div>
       <div id="crew-status" class="crew-status status-waiting">Waiting for broadcast...</div>
     </div>
-    <div style="text-align:right">
-      <div style="font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Last update</div>
-      <div id="last-update" style="font-size:11px;font-family:var(--mono);color:var(--text2);">—</div>
+    <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+      <span id="trip-day-badge" class="day-badge" style="display:none"></span>
+      <div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Last update</div>
+        <div id="last-update" style="font-size:11px;font-family:var(--mono);color:var(--text2);">—</div>
+      </div>
     </div>
   </div>
   <div style="position:relative;flex:1;display:flex;flex-direction:column;">
@@ -250,6 +260,7 @@ function showWatchScreen(crew, trip) {
 function startWatching(trip) {
   document.getElementById('crew-status').className = 'crew-status status-live'
   document.getElementById('crew-status').textContent = '● Live broadcast'
+  showTripDay(trip)
   loadPosition(trip.id)
 
   if (realtimeChannel) realtimeChannel.unsubscribe()
@@ -317,10 +328,27 @@ function updateLastUpdate(timestamp) {
     new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
 }
 
+function showTripDay(trip) {
+  if (!trip?.departure_date) return
+  const start = new Date(trip.departure_date)
+  start.setHours(0, 0, 0, 0)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const dayOf = Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1
+  if (dayOf < 1) return
+  const totalDays = trip.return_date
+    ? Math.floor((new Date(trip.return_date) - start) / (1000 * 60 * 60 * 24)) + 1
+    : null
+  const badge = document.getElementById('trip-day-badge')
+  badge.textContent = totalDays ? `DAY ${dayOf} / ${totalDays}` : `DAY ${dayOf}`
+  badge.style.display = 'inline-block'
+}
+
 function broadcastEnded() {
   document.getElementById('crew-status').className = 'crew-status status-waiting'
   document.getElementById('crew-status').textContent = 'Broadcast ended'
   document.getElementById('position-overlay').style.display = 'none'
+  document.getElementById('trip-day-badge').style.display = 'none'
   if (marker) { marker.remove(); marker = null }
   if (realtimeChannel) { realtimeChannel.unsubscribe(); realtimeChannel = null }
 }
