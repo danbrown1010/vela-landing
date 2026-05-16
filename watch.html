@@ -235,10 +235,11 @@ function showWatchScreen(crew, trip) {
   })
   map.addControl(new maplibregl.NavigationControl(), 'top-right')
 
+  // Always watch for broadcast start/stop, regardless of initial state
+  subscribeToCrewTrips(crew)
+
   if (trip) {
     startWatching(trip)
-  } else {
-    subscribeToCrewTrips(crew)
   }
 }
 
@@ -295,18 +296,28 @@ function updateLastUpdate(timestamp) {
     new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
 }
 
+function broadcastEnded() {
+  document.getElementById('crew-status').className = 'crew-status status-waiting'
+  document.getElementById('crew-status').textContent = 'Broadcast ended'
+  document.getElementById('position-overlay').style.display = 'none'
+  if (marker) { marker.remove(); marker = null }
+  if (realtimeChannel) { realtimeChannel.unsubscribe(); realtimeChannel = null }
+}
+
 function subscribeToCrewTrips(crew) {
   sb.channel(`crew-trips-${crew.pilot_id}`)
     .on('postgres_changes', {
-      event: 'UPDATE', schema: 'public', table: 'trips',
+      event: '*', schema: 'public', table: 'trips',
       filter: `user_id=eq.${crew.pilot_id}`,
     }, (payload) => {
-      if (payload.new?.is_published) {
+      // UPDATE where is_published → true: start watching
+      if (payload.eventType === 'UPDATE' && payload.new?.is_published) {
         startWatching(payload.new)
-      } else if (!payload.new?.is_published) {
-        document.getElementById('crew-status').className = 'crew-status status-waiting'
-        document.getElementById('crew-status').textContent = 'Broadcast ended'
-        if (marker) marker.remove()
+      }
+      // DELETE means the row is no longer visible to anon (is_published → false)
+      // or an explicit UPDATE with is_published false
+      else if (payload.eventType === 'DELETE' || (payload.eventType === 'UPDATE' && !payload.new?.is_published)) {
+        broadcastEnded()
       }
     })
     .subscribe()
