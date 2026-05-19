@@ -127,11 +127,16 @@ nav {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('images/hero.jpg');
   background-size: cover;
   background-position: center 45%;
   z-index: 0;
+  transition: opacity 1.5s ease-in-out;
 }
+
+.hero-bg-a { opacity: 1; }
+.hero-bg-b { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) { .hero-bg { transition: none; } }
 
 .hero-overlay {
   position: absolute;
@@ -626,7 +631,8 @@ footer {
 
 <!-- ── HERO ── -->
 <section class="hero">
-  <div class="hero-bg"></div>
+  <div class="hero-bg hero-bg-a" data-layer="a"></div>
+  <div class="hero-bg hero-bg-b" data-layer="b"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-tag">Expedition intelligence</div>
@@ -855,5 +861,101 @@ footer {
   <div class="footer-copy">© 2026 VELA · vela-go.com</div>
 </footer>
 
+<script>
+(function() {
+  const BACKGROUNDS = [
+    'images/backgrounds/2008_Abaco_EmilyNJake-1.webp',
+    'images/backgrounds/2008_Orca_MomNCalf.webp',
+    'images/backgrounds/2013_BecklerRiver.webp',
+    'images/backgrounds/2015_OrcasMorning2-X4.webp',
+    'images/backgrounds/38ad4660357493.5a49c38d4c648.webp',
+    'images/backgrounds/Avery.webp',
+    'images/backgrounds/BakerLake017.webp',
+    'images/backgrounds/CostaRica-94.webp',
+    'images/backgrounds/D850-45.webp',
+    'images/backgrounds/DSC_0314.webp',
+    'images/backgrounds/DSC_0577_25-X5.webp',
+    'images/backgrounds/DSC_6430-Edit-Edit-21.webp',
+    'images/backgrounds/IMG_0018.webp',
+    'images/backgrounds/IMG_1743.webp',
+    'images/backgrounds/IMG_2365.webp',
+    'images/backgrounds/IMG_8023.webp',
+    'images/backgrounds/MtRainier_2665-HDR-Edit-Edit-11.webp',
+    'images/backgrounds/New_Version-51.webp',
+    'images/backgrounds/Newport Oregon.webp',
+    'images/backgrounds/Prosser Balloon Rally.webp',
+    'images/backgrounds/ShiShi_Beach_1397-HDR-2.webp',
+    'images/backgrounds/ShiShi_Beach_1439_40_41_42_43_TM.webp',
+    'images/backgrounds/Untitled - 1 of 8.webp',
+    'images/backgrounds/Untitled - 2 of 8.webp',
+    'images/backgrounds/Untitled - 3 of 8.webp',
+    'images/backgrounds/Untitled - 4 of 8.webp',
+    'images/backgrounds/Untitled - 5 of 8.webp',
+    'images/backgrounds/Untitled - 6 of 8.webp',
+    'images/backgrounds/Untitled - 7 of 8.webp',
+    'images/backgrounds/Untitled - 8 of 8.webp',
+    'images/backgrounds/_8500763-14.webp',
+    'images/backgrounds/_8500971-Edit-Edit-102.webp',
+    'images/backgrounds/_8501302-Pano.webp',
+    'images/backgrounds/_8502016-HDR-Edit-Edit-45.webp',
+    'images/backgrounds/_8506703-Edit-Edit-2.webp',
+    'images/backgrounds/_8507141-Edit-Edit.webp',
+    'images/backgrounds/_8509837-Edit-93.webp',
+    'images/backgrounds/dbrown_05232023-11.webp',
+    'images/backgrounds/dbrown_05232023-25.webp',
+    'images/backgrounds/dbrown_08132023-101.webp',
+    'images/backgrounds/dbrown_08132023-88.webp',
+    'images/backgrounds/dbrown_08132023-89.webp',
+    'images/backgrounds/dbrown_08132023-90.webp',
+    'images/backgrounds/dbrown_08132023-95.webp',
+    'images/backgrounds/dbrown_08152023-1.webp',
+    'images/backgrounds/dbrown_2_080614.webp',
+    'images/backgrounds/dbrown_68_200827.webp',
+    'images/backgrounds/dbrown_8_091204.webp',
+    'images/backgrounds/original_86ba017daa3150af83fd22b88ffef0f0.webp',
+  ];
+  if (BACKGROUNDS.length === 0) return;
+
+  const layerA = document.querySelector('.hero-bg-a');
+  const layerB = document.querySelector('.hero-bg-b');
+  if (!layerA || !layerB) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let currentIdx = Math.floor(Math.random() * BACKGROUNDS.length);
+  let activeLayer = layerA;
+  let inactiveLayer = layerB;
+  activeLayer.style.backgroundImage = `url('${BACKGROUNDS[currentIdx]}')`;
+
+  if (reduceMotion || BACKGROUNDS.length < 2) return;
+
+  function pickNext() {
+    if (BACKGROUNDS.length === 1) return 0;
+    let next;
+    do { next = Math.floor(Math.random() * BACKGROUNDS.length); }
+    while (next === currentIdx);
+    return next;
+  }
+
+  setInterval(() => {
+    const nextIdx = pickNext();
+    const nextSrc = BACKGROUNDS[nextIdx];
+    const preload = new Image();
+    preload.onload = () => {
+      inactiveLayer.style.backgroundImage = `url('${nextSrc}')`;
+      void inactiveLayer.offsetWidth;
+      inactiveLayer.style.opacity = '1';
+      activeLayer.style.opacity = '0';
+      setTimeout(() => {
+        const tmp = activeLayer;
+        activeLayer = inactiveLayer;
+        inactiveLayer = tmp;
+        currentIdx = nextIdx;
+      }, 1600);
+    };
+    preload.src = nextSrc;
+  }, 30000);
+})();
+</script>
 </body>
 </html>
