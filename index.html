@@ -60,9 +60,10 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(26,29,34,0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(58,74,50,0.3);
+  background: rgba(26,29,34,0.55);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-bottom: 1px solid rgba(53,58,66,0.45);
 }
 
 .nav-logo {
@@ -151,6 +152,13 @@ nav {
   z-index: 1;
 }
 
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.10) 35%, transparent 70%);
+  z-index: 1;
+}
+
 .hero-content {
   position: relative;
   z-index: 2;
@@ -161,10 +169,11 @@ nav {
 
 .hero-tag {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
+  font-size: 14px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text2);
+  color: rgba(240,237,228,0.85);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.6), 0 3px 18px rgba(0,0,0,0.75);
   margin-bottom: 16px;
 }
 
@@ -356,7 +365,7 @@ section {
   position: absolute;
   top: 16px; right: 16px;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--accent);
@@ -438,6 +447,8 @@ section {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .pricing-card.pro {
@@ -447,7 +458,7 @@ section {
 
 .pricing-label {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 22px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text3);
@@ -502,17 +513,18 @@ section {
   font-weight: 600;
   text-decoration: none;
   transition: background 0.2s, transform 0.1s;
+  margin-top: auto;
 }
 
 .btn-pricing-free {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  color: var(--text2);
+  background: transparent;
+  border: 1px solid var(--text2);
+  color: var(--text);
 }
 
 .btn-pricing-free:hover {
-  background: var(--border);
-  color: var(--text);
+  background: rgba(240,237,228,0.06);
+  border-color: var(--text);
 }
 
 .btn-pricing-pro {
@@ -612,12 +624,7 @@ footer {
 <!-- ── NAV ── -->
 <nav>
   <a href="/" class="nav-logo">
-    <svg width="28" height="28" viewBox="0 0 100 100">
-      <path d="M50 5C41.7 5 35 11.7 35 20c0 11.5 15 28 15 28s15-16.5 15-28C65 11.7 58.3 5 50 5zM50 26c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z" fill="#F0EDE4"/>
-      <path d="M2 92L30 38L45 63L38 73L53 92H2z" fill="#F0EDE4" opacity="0.9"/>
-      <path d="M98 92L70 45L55 65L62 75L47 92H98z" fill="#F0EDE4" opacity="0.7"/>
-      <path d="M44 92C44 92 46 75 50 68C54 61 58 58 56 51C54 44 50 47 50 47" fill="none" stroke="#1C2117" stroke-width="5" stroke-linecap="round"/>
-    </svg>
+    <img src="/vela-mark.png" alt="VELA" width="26" height="26" style="border-radius:6px;display:block;">
     <span class="nav-logo-text">VELA</span>
   </a>
   <ul class="nav-links">
@@ -634,6 +641,7 @@ footer {
   <div class="hero-bg hero-bg-a" data-layer="a"></div>
   <div class="hero-bg hero-bg-b" data-layer="b"></div>
   <div class="hero-overlay"></div>
+  <div class="hero-vignette"></div>
   <div class="hero-content">
     <div class="hero-tag">Expedition intelligence</div>
     <h1 class="hero-title">Go Further.</h1>
@@ -843,12 +851,7 @@ footer {
 <!-- ── FOOTER ── -->
 <footer>
   <a href="/" class="footer-brand">
-    <svg width="22" height="22" viewBox="0 0 100 100">
-      <path d="M50 5C41.7 5 35 11.7 35 20c0 11.5 15 28 15 28s15-16.5 15-28C65 11.7 58.3 5 50 5zM50 26c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z" fill="#F0EDE4"/>
-      <path d="M2 92L30 38L45 63L38 73L53 92H2z" fill="#F0EDE4" opacity="0.9"/>
-      <path d="M98 92L70 45L55 65L62 75L47 92H98z" fill="#F0EDE4" opacity="0.7"/>
-      <path d="M44 92C44 92 46 75 50 68C54 61 58 58 56 51C54 44 50 47 50 47" fill="none" stroke="#1C2117" stroke-width="5" stroke-linecap="round"/>
-    </svg>
+    <img src="/vela-mark.png" alt="VELA" width="22" height="22" style="border-radius:5px;display:block;">
     <span class="footer-brand-text">VELA</span>
   </a>
   <ul class="footer-links">
